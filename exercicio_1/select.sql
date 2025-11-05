@@ -59,7 +59,8 @@ SELECT TOP 20
   E.Nome AS Escola,
   M.DataMatricula,
   M.Estado,
-  M.LastModifiedUser
+  M.LastModifiedUser,
+  M.LastModifiedDate
 FROM Alunos.Matricula M
 JOIN Alunos.Aluno A ON A.ID = M.AlunoID
 JOIN Escola.Turma T ON T.ID = M.TurmaID
@@ -69,15 +70,16 @@ ORDER BY M.ID;
 -- ======================
 -- 6. NOTAS (as primeiras 20)
 -- ======================
-PRINT '===== PRIMEIRAS 20 NOTAS =====';
-SELECT TOP 20
+PRINT '===== PRIMEIRAS 100 NOTAS =====';
+SELECT TOP 100
   N.ID,
   A.Pnome + ' ' + A.Unome AS Aluno,
   T.CodigoTurma,
   D.Sigla AS Disciplina,
   N.Periodo,
   N.Nota,
-  N.LastModifiedUser
+  N.LastModifiedUser,
+  N.LastModifiedDate
 FROM Avaliacao.Nota N
 JOIN Alunos.Matricula M ON M.ID = N.MatriculaID
 JOIN Alunos.Aluno A ON A.ID = M.AlunoID
@@ -89,7 +91,7 @@ ORDER BY N.ID;
 -- 7. MÉDIAS POR ALUNO E DISCIPLINA
 -- ======================
 PRINT '===== MÉDIAS POR ALUNO E DISCIPLINA =====';
-SELECT TOP 10
+SELECT TOP 50
    A.Pnome + ' ' + A.Unome AS Aluno,
    T.CodigoTurma,
    D.Nome AS Disciplina,
@@ -106,16 +108,28 @@ ORDER BY Aluno, Disciplina;
 -- 8. TOP 5 ALUNOS (MÉDIA GLOBAL)
 -- ======================
 PRINT '===== TOP 5 ALUNOS (MÉDIA GLOBAL) =====';
+
 WITH Medias AS (
   SELECT
-    A.Pnome + ' ' + A.Unome AS Aluno,
-    AVG(N.Nota) AS MediaGlobal
-  FROM Avaliacao.Nota N
-  JOIN Alunos.Matricula M ON M.ID = N.MatriculaID
-  JOIN Alunos.Aluno A ON A.ID = M.AlunoID
-  GROUP BY A.Pnome, A.Unome
+      A.Pnome + ' ' + A.Unome AS Aluno,
+      T.CodigoTurma,
+      E.Nome AS Escola,
+      AVG(N.Nota) AS MediaGlobal
+  FROM Avaliacao.Nota AS N
+  JOIN Alunos.Matricula AS M ON M.ID = N.MatriculaID
+  JOIN Alunos.Aluno    AS A ON A.ID = M.AlunoID
+  JOIN Escola.Turma    AS T ON T.ID = M.TurmaID
+  JOIN Escola.Escola   AS E ON E.ID = T.EscolaID
+  GROUP BY A.Pnome, A.Unome, T.CodigoTurma, E.Nome
 )
-SELECT TOP 5 * FROM Medias ORDER BY MediaGlobal DESC;
+SELECT TOP 5
+    Aluno,
+    CodigoTurma,
+    Escola,
+    CAST(MediaGlobal AS DECIMAL(5,2)) AS MediaGlobal
+FROM Medias
+ORDER BY MediaGlobal DESC;
+GO
 
 -- ======================
 -- 9. CONTAGEM DE REGISTOS

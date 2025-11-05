@@ -37,8 +37,10 @@ GO
 EXEC Jogadores.SP_inserirJogador
     @NomeJogador = 'Neymar',
     @NumeroCamisola = 11,
-    @DtNascimento = '1992-02-05';
-GO
+    @DtNascimento = '1992-02-05',
+    @Cidade = 'Paris',
+    @Equipa = 'PSG',
+    @Salario = 3500000;
 
 -- 8) Confirmar inserção
 SELECT * FROM Jogadores.Jogador ORDER BY Id DESC;
