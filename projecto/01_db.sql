@@ -1,7 +1,7 @@
 USE master;
 GO
 
--- 1) Base de Dados
+-- Base de Dados
 IF DB_ID(N'Intergalaticos') IS NULL
 BEGIN
     CREATE DATABASE Intergalaticos;
@@ -11,7 +11,7 @@ GO
 USE Intergalaticos;
 GO
 
--- 2) Schemas
+-- Schemas
 IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = N'Jogadores')
     EXEC('CREATE SCHEMA Jogadores');
 GO
@@ -19,7 +19,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = N'Equipas')
     EXEC('CREATE SCHEMA Equipas');
 GO
 
--- 3a) Tabela Jogadores.Jogador
+--  Tabela Jogadores.Jogador
 IF OBJECT_ID(N'Jogadores.Jogador', N'U') IS NOT NULL
     DROP TABLE Jogadores.Jogador;
 GO
@@ -32,7 +32,7 @@ CREATE TABLE Jogadores.Jogador (
 );
 GO
 
--- 3b) Tabela Equipas.Equipa
+-- Tabela Equipas.Equipa
 IF OBJECT_ID(N'Equipas.Equipa', N'U') IS NOT NULL
     DROP TABLE Equipas.Equipa;
 GO
@@ -59,7 +59,7 @@ ADD CONSTRAINT FK_Equipa_Jogador
 FOREIGN KEY (JogadorId) REFERENCES Jogadores.Jogador(Id);
 GO
 
--- 3c) Tabela Equipas.InformacoesAdicionais
+-- Tabela Equipas.InformacoesAdicionais
 IF OBJECT_ID(N'Equipas.InformacoesAdicionais', N'U') IS NOT NULL
     DROP TABLE Equipas.InformacoesAdicionais;
 GO
